@@ -1,0 +1,10 @@
+{
+  "ignore": [".git", "node_modules/**/node_modules"],
+  "execMap": {
+    "js": "node --experimental-modules --es-module-specifier-resolution=node"
+  },
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "ext": "js"
+}
