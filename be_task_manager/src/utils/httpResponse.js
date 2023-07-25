@@ -32,9 +32,17 @@ export class HttpResponse {
 
     static updated(res, data) {
         return res.status(httpStatus.success).json({
-            status: httpStatus.success,
-            code: 200,
+            status: "success",
+            code: httpStatus.success,
             message: "Dữ liệu đã được cập nhật thành công.",
+            data,
+        });
+    }
+    static delete(res, data) {
+        return res.status(httpStatus.success).json({
+            status: "success",
+            code: httpStatus.success,
+            message: "Dữ liệu đã được xoá thành công.",
             data,
         });
     }

@@ -1,24 +1,58 @@
 import { createFs, readFs } from "../utils/fsFile.js";
-
+import { HttpResponse } from "../utils/httpResponse.js";
+import { randomUUID } from 'crypto';
 const taskList = readFs('tasks');
-
+const userList = readFs('user');
+const categoryList = readFs('category');
 const taskController = {
     get(req, res) {
-        throw ('Loi roi');
-        return res.status(200).json({
-            message: 'Get task successfully',
-            data: {
-                taskList
-            }
-        });
+        return HttpResponse.get(res, taskList);
+    },
+    getById(req, res) {
+        const { id } = req.params;
+        const data = taskList.find(e => e.id === id);
+        if (!data) {
+            return HttpResponse.error(res);
+        }
+        const cloneData = JSON.parse(JSON.stringify(data));
+        const userDetail = userList.filter(e => cloneData.users.includes(e.id));
+        const categoryDetail = categoryList.find(e => e.id === cloneData.category);
+        cloneData.category = categoryDetail;
+        cloneData.users = userDetail;
+        return HttpResponse.get(res, cloneData);
+    },
+    updateById(req, res) {
+        const { id } = req.params;
+        const { title, description, category, users } = req.body;
+        const data = taskList.find(e => e.id === id);
+        if (!data) {
+            return HttpResponse.error(res);
+        }
+        data.title = title;
+        data.description = description;
+        createFs('tasks', taskList);
+        return HttpResponse.updated(res);
+    }
+    ,
+    deleteById(req, res) {
+        const { id } = req.params;
+        const data = taskList.findIndex(e => e.id === id);
+        if (data < 0) {
+            return HttpResponse.error(res);
+        }
+        taskList.splice(data, 1);
+        createFs('tasks', taskList);
+        return HttpResponse.delete(res);
     },
     post(req, res) {
         const data = req.body;
-        taskList.push(data);
-        createFs('tasks', taskList);
-        return res.status(200).json({
-            message: 'Create task successfully!'
+        let id = randomUUID();
+        taskList.push({
+            id,
+            ...data
         });
+        createFs('tasks', taskList);
+        return HttpResponse.created(res);
     }
 };
 

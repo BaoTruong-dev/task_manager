@@ -4,10 +4,10 @@ export const wrapperErrorHandle = (cb) => (req, res, next) => {
     try {
         return cb(req, res);
     } catch (error) {
-        next(error);
+        next(error.message);
     }
 };
 
 export const handleCatchError = (error, req, res, next) => {
-    return HttpResponse.error(res, error);
+    return HttpResponse.error(res, error.message);
 };
