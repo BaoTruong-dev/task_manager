@@ -6,3 +6,4 @@ import { upload } from "../middlewares/file.middleware";
 export const fileRouter = Router();
 
 fileRouter.post('/avatar', upload.single('avatar'), wrapperErrorHandle(fileController.avatar));
+fileRouter.post('/listImage', upload.array('listImage'), wrapperErrorHandle(fileController.listImage));
