@@ -1,6 +1,7 @@
 import { createFs, readFs } from "../utils/fsFile.js";
 import { HttpResponse } from "../utils/httpResponse.js";
 import { randomUUID } from 'crypto';
+import { taskModel } from "../models/task.model.js";
 const taskList = readFs('tasks');
 const userList = readFs('user');
 const categoryList = readFs('category');
@@ -44,14 +45,10 @@ const taskController = {
         createFs('tasks', taskList);
         return HttpResponse.delete(res);
     },
-    post(req, res) {
+    async post(req, res) {
         const data = req.body;
-        let id = randomUUID();
-        taskList.push({
-            id,
-            ...data
-        });
-        createFs('tasks', taskList);
+        let result = await taskModel.create(data);
+        console.log(result);
         return HttpResponse.created(res);
     }
 };
