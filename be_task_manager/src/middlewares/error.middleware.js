@@ -4,6 +4,7 @@ export const wrapperErrorHandle = (cb) => (req, res, next) => {
     try {
         return cb(req, res, next);
     } catch (error) {
+        console.log('maaaa', error);
         next(error);
     }
 };

@@ -9,7 +9,7 @@ const taskRouter = Router();
 taskRouter.get('', wrapperErrorHandle(taskController.get));
 taskRouter.get('/:id', wrapperErrorHandle(taskController.getById));
 
-taskRouter.post('', validate(taskSchemaCreated), wrapperErrorHandle(taskController.post));
+taskRouter.post('', validate(taskSchemaCreated), wrapperErrorHandle(taskController.create));
 taskRouter.patch('/:id', validate(taskSchemaUpdate), wrapperErrorHandle(taskController.updateById));
 taskRouter.delete('/:id', wrapperErrorHandle(taskController.deleteById));
 

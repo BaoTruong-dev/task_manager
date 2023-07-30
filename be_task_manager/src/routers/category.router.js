@@ -8,7 +8,7 @@ const categoryRouter = Router();
 
 categoryRouter.get('', wrapperErrorHandle(categoryController.get));
 categoryRouter.get('/:id', wrapperErrorHandle(categoryController.getById));
-categoryRouter.post('', validate(categorySchemaCreated), wrapperErrorHandle(categoryController.post));
+categoryRouter.post('', validate(categorySchemaCreated), wrapperErrorHandle(categoryController.create));
 categoryRouter.patch('/:id', validate(categorySchemaCreated), wrapperErrorHandle(categoryController.updateById));
 categoryRouter.delete('/:id', wrapperErrorHandle(categoryController.deleteById));
 

@@ -1,8 +1,9 @@
-export const validate = (cb) => async (req, res, next) => {
+export const validate = (schema) => async (req, res, next) => {
     try {
-        await cb.validateAsync(req.body, { abortEarly: false });
+        await schema.validateAsync(req.body, { abortEarly: false });
         next();
     } catch (error) {
-        next({ message: error });
+        console.log('error', error);
+        next(error);
     }
 };

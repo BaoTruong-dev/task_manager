@@ -1,29 +1,35 @@
 import Joi from 'joi';
-import { readFs } from '../utils/fsFile';
+import { ObjectId } from 'mongodb';
+import { categoryModel } from '../models/category.model';
+import { userModel } from '../models/user.model';
 
-const categoryList = readFs('category');
-const userList = readFs('user');
 
 
 
 export const taskSchemaUpdate = Joi.object({
     title: Joi.string(),
     description: Joi.string().optional().allow(null),
-    category: Joi.string().custom((value, message) => {
-        let checked = categoryList.findIndex(e => e.id === value);
-        if (checked < 0) {
-            return message.message('CategoryId is wrong!');
+    category: Joi.string().external(async (value, message) => {
+        if (value) {
+            const categoryList = await categoryModel.get();
+            let checked = categoryList.some(e => e._id.equals(new ObjectId(value))
+            );
+            if (!checked) {
+                return message.message('CategoryId is wrong!');
+            }
+            return true;
         }
-        return true;
     }),
-    users: Joi.array().items(Joi.string()).custom((value, message) => {
-        let checked = userList.filter(e => value.includes(e.id));
-        if (checked.length < value.length) {
-            return message.message('UserId is wrong!');
+    users: Joi.array().items(Joi.string()).external(async (value, message) => {
+        if (value) {
+            const userList = await userModel.get();
+            let checked = userList.filter(e => value.includes(e._id.toString()));
+            if (checked.length === 0 || checked.length < value.length) {
+                return message.message('UserId is wrong!');
+            }
+            return true;
         }
-        return true;
     })
-
 });
 
 export const taskSchemaCreated = taskSchemaUpdate.fork(['title', 'description', 'category', 'users'], (schema) => {

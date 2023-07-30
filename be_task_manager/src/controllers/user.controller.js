@@ -1,10 +1,12 @@
+import { userModel } from "../models/user.model.js";
 import { createFs, readFs } from "../utils/fsFile.js";
 import { HttpResponse } from "../utils/httpResponse.js";
 import { randomUUID } from 'crypto';
 const userList = readFs('user');
 const userController = {
-    get(req, res) {
-        return HttpResponse.get(res, userList);
+    async get(req, res) {
+        const result = await userModel.get();
+        return HttpResponse.get(res, result);
     },
     getById(req, res) {
         const { id } = req.params;
@@ -13,6 +15,10 @@ const userController = {
             return HttpResponse.error(res);
         }
         return HttpResponse.get(res, data);
+    },
+    async post(req, res) {
+        await userModel.create(req.body);
+        return HttpResponse.created(res);
     },
     updateById(req, res) {
         const { id } = req.params;
@@ -36,16 +42,7 @@ const userController = {
         createFs('user', userList);
         return HttpResponse.delete(res);
     },
-    post(req, res) {
-        const { name } = req.body;
-        let id = randomUUID();
-        userList.push({
-            id,
-            name
-        });
-        createFs('user', userList);
-        return HttpResponse.created(res);
-    }
+
 };
 
 export default userController;
