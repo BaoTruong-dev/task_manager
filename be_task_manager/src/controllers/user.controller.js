@@ -1,45 +1,41 @@
 import { userModel } from "../models/user.model.js";
-import { createFs, readFs } from "../utils/fsFile.js";
 import { HttpResponse } from "../utils/httpResponse.js";
-import { randomUUID } from 'crypto';
-const userList = readFs('user');
 const userController = {
     async get(req, res) {
         const result = await userModel.get();
         return HttpResponse.get(res, result);
     },
-    getById(req, res) {
+    async getById(req, res, next) {
         const { id } = req.params;
-        const data = userList.find(e => e.id === id);
-        if (!data) {
-            return HttpResponse.error(res);
+        const result = await userModel.getById(id);
+        if (!result) {
+            return next('Not found');
         }
-        return HttpResponse.get(res, data);
+        return HttpResponse.get(res, result);
     },
-    async post(req, res) {
-        await userModel.create(req.body);
+    async create(req, res) {
+        const data = req.body;
+        await userModel.create(data);
         return HttpResponse.created(res);
     },
-    updateById(req, res) {
+    async updateById(req, res, next) {
         const { id } = req.params;
-        const { name } = req.body;
-        const data = userList.find(e => e.id === id);
-        if (!data) {
-            return HttpResponse.error(res);
+        const data = req.body;
+
+        const result = await userModel.updateById(id, data);
+
+        if (!result) {
+            return next('Not found');
         }
-        data.name = name;
-        createFs('user', userList);
         return HttpResponse.updated(res);
     }
     ,
-    deleteById(req, res) {
+    async deleteById(req, res, next) {
         const { id } = req.params;
-        const data = userList.findIndex(e => e.id === id);
-        if (data < 0) {
-            return HttpResponse.error(res);
+        let result = await userModel.deleteById(id);
+        if (!result) {
+            return next('Not found');
         }
-        userList.splice(data, 1);
-        createFs('user', userList);
         return HttpResponse.delete(res);
     },
 

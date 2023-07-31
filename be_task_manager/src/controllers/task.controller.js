@@ -1,8 +1,5 @@
-import { createFs, readFs } from "../utils/fsFile.js";
-import { HttpResponse } from "../utils/httpResponse.js";
-import { randomUUID } from 'crypto';
 import { taskModel } from "../models/task.model.js";
-import { log } from "console";
+import { HttpResponse } from "../utils/httpResponse.js";
 
 const taskController = {
     async get(req, res) {
@@ -12,6 +9,9 @@ const taskController = {
     async getById(req, res) {
         const { id } = req.params;
         const result = await taskModel.getById(id);
+        if (!result) {
+            return next('Not found');
+        }
         return HttpResponse.get(res, result);
     },
     async create(req, res) {
@@ -24,8 +24,7 @@ const taskController = {
         const data = req.body;
 
         const result = await taskModel.updateById(id, data);
-
-        if (!result.matchedCount) {
+        if (!result) {
             return next('Not found');
         }
         return HttpResponse.updated(res);

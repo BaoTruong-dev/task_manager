@@ -14,6 +14,7 @@ export const taskSchemaUpdate = Joi.object({
             const categoryList = await categoryModel.get();
             let checked = categoryList.some(e => e._id.equals(new ObjectId(value))
             );
+            console.log(checked, '-----');
             if (!checked) {
                 return message.message('CategoryId is wrong!');
             }

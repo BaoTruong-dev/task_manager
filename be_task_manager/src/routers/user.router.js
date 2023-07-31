@@ -8,7 +8,7 @@ const userRouter = Router();
 
 userRouter.get('', wrapperErrorHandle(userController.get));
 userRouter.get('/:id', wrapperErrorHandle(userController.getById));
-userRouter.post('', validate(userSchemaCreated), wrapperErrorHandle(userController.post));
+userRouter.post('', validate(userSchemaCreated), wrapperErrorHandle(userController.create));
 userRouter.patch('/:id', validate(userSchemaCreated), wrapperErrorHandle(userController.updateById));
 userRouter.delete('/:id', wrapperErrorHandle(userController.deleteById));
 

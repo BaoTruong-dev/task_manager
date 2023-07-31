@@ -4,7 +4,7 @@ import helmet from 'helmet';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 // import { connectDb } from './config/db.config.js';
-import { handleCatchError } from './middlewares/error.middleware.js';
+import { handleCatchError, NotMatchedRoute } from './middlewares/error.middleware.js';
 import { loggerMiddleware } from './middlewares/log.middleware.js';
 import categoryRouter from './routers/category.router.js';
 import { fileRouter } from './routers/file.router.js';
@@ -28,12 +28,10 @@ app.use('/users', userRouter);
 app.use('/file', fileRouter);
 
 app.use('/upload', express.static(join(__dirname, 'upload')));
-
-app.use('*', (req, res, next) => {
-    next('Not Found');
-});
-
+app.use(NotMatchedRoute);
 app.use(handleCatchError);
+
+
 app.listen(PORT, () => {
     console.log(`Server is running at PORT ${PORT}`);
 });

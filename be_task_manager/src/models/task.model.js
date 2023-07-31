@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { client, db } from "../config/db.config";
+import { db } from "../config/db.config";
 
 class TaskModel {
     constructor() {
@@ -18,15 +18,18 @@ class TaskModel {
     async deleteById(id) {
         let result = await this.collection.deleteOne({ _id: new ObjectId(id) });
         if (!result.deletedCount > 0) {
-            return null;
+            return undefined;
         }
         return result;
     }
     async updateById(id, value) {
-        let result = await this.collection.updateOne({ _id: new ObjectId(id) }, {
+        let { matchedCount } = await this.collection.updateOne({ _id: new ObjectId(id) }, {
             $set: value
         });
-        return result;
+        if (!matchedCount) {
+            return undefined;
+        }
+        return true;
     }
 }
 
