@@ -1,22 +1,35 @@
 import { userModel } from "../models/user.model.js";
 import { HttpResponse } from "../utils/httpResponse.js";
 const userController = {
-    async get(req, res) {
-        const result = await userModel.get();
-        return HttpResponse.get(res, result);
-    },
-    async getById(req, res, next) {
-        const { id } = req.params;
-        const result = await userModel.getById(id);
+    async getMe(req, res, next) {
+        const uid = req.uid;
+        const result = await userModel.getMe(uid);
         if (!result) {
             return next('Not found');
         }
+        delete result.password;
         return HttpResponse.get(res, result);
     },
-    async create(req, res) {
+    async getList(req, res, next) {
+        const query = req.query;
+        let result = await userModel.getList(query);
+        return HttpResponse.get(res, result);
+    },
+    async login(req, res,) {
         const data = req.body;
-        await userModel.create(data);
-        return HttpResponse.created(res);
+        let result = await userModel.login(data);
+        if (!result) {
+            return next('Email or Password is wrong!');
+        }
+        return HttpResponse.success(res, result);
+    },
+    async register(req, res, next) {
+        const data = req.body;
+        let result = await userModel.register(data);
+        if (result) {
+            return HttpResponse.created(res);
+        }
+        return HttpResponse.error(res, 'Email\'s already existed!');
     },
     async updateById(req, res, next) {
         const { id } = req.params;
@@ -30,14 +43,7 @@ const userController = {
         return HttpResponse.updated(res);
     }
     ,
-    async deleteById(req, res, next) {
-        const { id } = req.params;
-        let result = await userModel.deleteById(id);
-        if (!result) {
-            return next('Not found');
-        }
-        return HttpResponse.delete(res);
-    },
+
 
 };
 

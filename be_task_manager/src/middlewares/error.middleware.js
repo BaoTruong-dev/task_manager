@@ -11,5 +11,6 @@ export const NotMatchedRoute = (req, res, next) => {
     next('Route not matched');
 };
 export const handleCatchError = (error, req, res, next) => {
+    console.log(error);
     return HttpResponse.error(res, error);
 };

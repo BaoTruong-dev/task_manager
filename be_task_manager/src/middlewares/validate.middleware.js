@@ -1,4 +1,4 @@
-export const validate = (schema) => async (req, res, next) => {
+export const validateMiddleware = (schema) => async (req, res, next) => {
     try {
         await schema.validateAsync(req.body, { abortEarly: false });
         next();

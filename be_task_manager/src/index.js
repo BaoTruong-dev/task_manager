@@ -11,6 +11,7 @@ import { fileRouter } from './routers/file.router.js';
 import taskRouter from './routers/task.router.js';
 import userRouter from './routers/user.router.js';
 import './config/db.config';
+import { generateRandomSalt } from './utils/crypto.js';
 config();
 const app = express();
 const PORT = process.env.PORT || 800;
@@ -30,7 +31,6 @@ app.use('/file', fileRouter);
 app.use('/upload', express.static(join(__dirname, 'upload')));
 app.use(NotMatchedRoute);
 app.use(handleCatchError);
-
 
 app.listen(PORT, () => {
     console.log(`Server is running at PORT ${PORT}`);
