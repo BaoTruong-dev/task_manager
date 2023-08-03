@@ -14,7 +14,6 @@ export const taskSchemaUpdate = Joi.object({
             const categoryList = await categoryModel.get();
             let checked = categoryList.some(e => e._id.equals(new ObjectId(value))
             );
-            console.log(checked, '-----');
             if (!checked) {
                 return message.message('CategoryId is wrong!');
             }
@@ -23,7 +22,7 @@ export const taskSchemaUpdate = Joi.object({
     }),
     users: Joi.array().items(Joi.string()).external(async (value, message) => {
         if (value) {
-            const userList = await userModel.get();
+            const userList = await userModel.getList();
             let checked = userList.filter(e => value.includes(e._id.toString()));
             if (checked.length === 0 || checked.length < value.length) {
                 return message.message('UserId is wrong!');

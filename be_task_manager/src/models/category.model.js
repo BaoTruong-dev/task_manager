@@ -1,12 +1,13 @@
 import { ObjectId } from "mongodb";
 import { client, db } from "../config/db.config";
+import { paginatePlugin } from "../utils/paginate.plugin";
 
 class CategoryModel {
     constructor() {
         this.collection = db.collection('category');
     }
-    async get() {
-        return await this.collection.find().toArray();
+    async getList(query) {
+        return paginatePlugin(this.collection, query);
     }
     async create(data) {
         return await this.collection.insertOne(data);
@@ -30,6 +31,10 @@ class CategoryModel {
         }
         return true;
     }
+    async createIndex() {
+        await this.collection.createIndex({ name: 'text' });
+    }
 }
 
 export const categoryModel = new CategoryModel();
+categoryModel.createIndex();

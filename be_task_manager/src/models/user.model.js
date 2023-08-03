@@ -1,14 +1,21 @@
 import { ObjectId } from "mongodb";
 import { db } from "../config/db.config";
-import crypto from 'crypto';
 import { hashPassword } from "../utils/crypto";
+import { paginatePlugin } from "../utils/paginate.plugin";
 import { Token } from "./token.model";
 class UserModel {
     constructor() {
         this.collection = db.collection('users');
+        this.pipeline = [
+            {
+                $project: {
+                    password: 0
+                }
+            }
+        ];
     }
     async getList(query) {
-        return await this.collection.find().toArray();
+        return await paginatePlugin(this.collection, query, this.pipeline);
     }
     async register(data) {
         let existedEmail = await this.collection.findOne({ email: data.email });
@@ -47,6 +54,9 @@ class UserModel {
         }
         return true;
     }
+    async createIndex() {
+        await this.collection.createIndex({ name: 'text' });
+    }
 }
-
 export const userModel = new UserModel();
+userModel.createIndex();

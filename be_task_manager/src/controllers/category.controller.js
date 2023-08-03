@@ -1,8 +1,9 @@
 import { categoryModel } from "../models/category.model.js";
 import { HttpResponse } from "../utils/httpResponse.js";
 const categoryController = {
-    async get(req, res) {
-        const result = await categoryModel.get();
+    async getList(req, res) {
+        const query = req.query;
+        const result = await categoryModel.getList(query);
         return HttpResponse.get(res, result);
     },
 

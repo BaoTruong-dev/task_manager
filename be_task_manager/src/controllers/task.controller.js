@@ -2,8 +2,9 @@ import { taskModel } from "../models/task.model.js";
 import { HttpResponse } from "../utils/httpResponse.js";
 
 const taskController = {
-    async get(req, res) {
-        const result = await taskModel.get();
+    async getList(req, res) {
+        const query = req.query;
+        const result = await taskModel.getList(query);
         return HttpResponse.get(res, result);
     },
     async getById(req, res) {

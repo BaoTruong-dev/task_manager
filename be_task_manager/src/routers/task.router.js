@@ -6,7 +6,7 @@ import { taskSchemaCreated, taskSchemaUpdate } from '../schema/task.schema..js';
 
 const taskRouter = Router();
 
-taskRouter.get('', (taskController.get));
+taskRouter.get('', (taskController.getList));
 taskRouter.get('/:id', wrapperErrorHandle(taskController.getById));
 
 taskRouter.post('', validateMiddleware(taskSchemaCreated), wrapperErrorHandle(taskController.create));

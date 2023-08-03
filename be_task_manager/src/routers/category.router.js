@@ -6,7 +6,7 @@ import { categorySchemaCreated } from '../schema/category.schema.js';
 
 const categoryRouter = Router();
 
-categoryRouter.get('', wrapperErrorHandle(categoryController.get));
+categoryRouter.get('', wrapperErrorHandle(categoryController.getList));
 categoryRouter.get('/:id', wrapperErrorHandle(categoryController.getById));
 categoryRouter.post('', validateMiddleware(categorySchemaCreated), wrapperErrorHandle(categoryController.create));
 categoryRouter.patch('/:id', validateMiddleware(categorySchemaCreated), wrapperErrorHandle(categoryController.updateById));
