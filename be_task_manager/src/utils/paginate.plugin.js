@@ -40,7 +40,7 @@ export const paginatePlugin = async (collection, query, pipeline) => {
         }
     }
     if (pipeline) {
-        _pipeline.push(...pipeline);
+        _pipeline.unshift(...pipeline);
     }
     if (fields) {
         let arrFields = fields.split('.');
@@ -52,7 +52,6 @@ export const paginatePlugin = async (collection, query, pipeline) => {
             $project: result
         });
     }
-    console.log(_pipeline);
     const data = await collection.aggregate(_pipeline).toArray();
     return {
         data,

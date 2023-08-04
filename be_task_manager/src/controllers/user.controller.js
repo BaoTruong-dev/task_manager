@@ -15,7 +15,7 @@ const userController = {
         let result = await userModel.getList(query);
         return HttpResponse.get(res, result);
     },
-    async login(req, res,) {
+    async login(req, res, next) {
         const data = req.body;
         let result = await userModel.login(data);
         if (!result) {
@@ -43,6 +43,21 @@ const userController = {
         return HttpResponse.updated(res);
     }
     ,
+    async forgotPassword(req, res, next) {
+        const result = await userModel.forgotPassword(req.body);
+        if (!result) {
+            return next('Email isn\'t existed');
+        }
+        return HttpResponse.success(res);
+    },
+    async resetPassword(req, res, next) {
+        const result = await userModel.resetPassword(req.body);
+        if (!result) {
+            return next('Code is wrong!');
+        }
+        return HttpResponse.success(res);
+    },
+
 
 
 };

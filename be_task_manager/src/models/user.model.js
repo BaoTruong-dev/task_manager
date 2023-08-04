@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 import { db } from "../config/db.config";
-import { hashPassword } from "../utils/crypto";
+import { sendMail } from "../config/mail.config";
+import { generateRandomSalt, hashPassword } from "../utils/crypto";
 import { paginatePlugin } from "../utils/paginate.plugin";
 import { Token } from "./token.model";
 class UserModel {
@@ -31,6 +32,7 @@ class UserModel {
     async login(data) {
         let { email, password } = data;
         let afterHashedPassword = hashPassword(password);
+        console.log(afterHashedPassword, '----');
         const user = await this.collection.findOne({ email, password: afterHashedPassword });
         if (user) {
             const refresh_token = Token.refreshToken({ uid: 1 });
@@ -51,6 +53,36 @@ class UserModel {
         });
         if (!matchedCount) {
             return undefined;
+        }
+        return true;
+    }
+    async forgotPassword(data) {
+        const { email, url } = data;
+        const codeForgotPassword = generateRandomSalt(64);
+        const { value } = await this.collection.findOneAndUpdate({ email }, {
+            $set: {
+                codeForgotPassword
+            }
+        });
+        if (value) {
+            let newUrl = `${url}?code=${codeForgotPassword}`;
+            return await sendMail({ email, url: newUrl });
+        }
+        return null;
+    }
+    async resetPassword(data) {
+        const { code: codeForgotPassword, password } = data;
+        const encryptPassword = hashPassword(password);
+        const { value } = await this.collection.findOneAndUpdate({ codeForgotPassword }, {
+            $unset: {
+                codeForgotPassword: ""
+            },
+            $set: {
+                password: encryptPassword
+            }
+        });
+        if (!value) {
+            return null;
         }
         return true;
     }

@@ -5,6 +5,6 @@ export const hashPassword = (password) => {
     return hash.digest('hex');
 };
 
-export const generateRandomSalt = () => {
-    return crypto.randomBytes(parseInt(process.env.LENGTH_SALT)).toString('hex');
+export const generateRandomSalt = (length = process.env.LENGTH_SALT) => {
+    return crypto.randomBytes(parseInt(length)).toString('hex');
 };

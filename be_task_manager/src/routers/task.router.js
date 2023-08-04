@@ -10,6 +10,7 @@ taskRouter.get('', (taskController.getList));
 taskRouter.get('/:id', wrapperErrorHandle(taskController.getById));
 
 taskRouter.post('', validateMiddleware(taskSchemaCreated), wrapperErrorHandle(taskController.create));
+
 taskRouter.patch('/:id', validateMiddleware(taskSchemaUpdate), wrapperErrorHandle(taskController.updateById));
 taskRouter.delete('/:id', wrapperErrorHandle(taskController.deleteById));
 

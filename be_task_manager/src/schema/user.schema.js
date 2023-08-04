@@ -1,4 +1,5 @@
 import Joi from "joi";
+import { userModel } from "../models/user.model";
 
 const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const rulesRegex = /(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+~`[\]{}|:;"'<>,.?/\\])/;
@@ -22,5 +23,16 @@ export const userSchemaRegister = Joi.object({
 export const userSchemaLogin = Joi.object({
     email: userSchemaRegister.extract('email'),
     password: userSchemaRegister.extract('password'),
+});
+
+export const userSchemaForgotPassword = Joi.object({
+    email: userSchemaRegister.extract('email'),
+    url: userSchemaRegister.extract('name')
+});
+
+export const userSchemaResetPassword = Joi.object({
+    code: userSchemaRegister.extract('name'),
+    password: userSchemaRegister.extract('password')
 })
+
 
